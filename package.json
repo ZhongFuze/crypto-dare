@@ -1,0 +1,22 @@
+{
+  "name": "crypto-dare",
+  "version": "1.0.0",
+  "description": "DARE combines a modern AE scheme with a simple reordering protection mechanism to build a tamper-resistant encryption scheme.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZhongFuze/crypto-dare.git"
+  },
+  "keywords": [
+    "crypto"
+  ],
+  "author": "Zella Zhong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZhongFuze/crypto-dare/issues"
+  },
+  "homepage": "https://github.com/ZhongFuze/crypto-dare#readme"
+}
