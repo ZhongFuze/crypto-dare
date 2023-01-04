@@ -10,22 +10,22 @@ it('Get SHA', async () => {
 });
 
 it('EncDeriveKey', async () => {
-  let dare = new DARE()
-  let src = 'README.md'
-  let dst = 'README.md.enc'
-  let password = '012345678901234567890'
-  const deriveKey = await Promise.resolve(dare.EncryptDeriveKey(password, src, dst))
+  let dare = new DARE();
+  let src = 'README.md';
+  let dst = 'README.md.enc';
+  let password = '012345678901234567890';
+  const deriveKey = await Promise.resolve(dare.EncryptDeriveKey(password, src, dst));
   // use deriveKey ...
-})
+});
 
 it('DecDeriveKey', async () => {
-  let dare = new DARE()
-  let src = 'README.md.enc'
-  let dst = 'README.md.dec'
-  let password = '012345678901234567890'
-  const deriveKey = await Promise.resolve(dare.DecryptDeriveKey(password, src, dst))
+  let dare = new DARE();
+  let src = 'README.md.enc';
+  let dst = 'README.md.dec';
+  let password = '012345678901234567890';
+  const deriveKey = await Promise.resolve(dare.DecryptDeriveKey(password, src, dst));
   // use deriveKey ...
-})
+});
 
 it('Encrypt', async () => {
   let dare = new DARE();
