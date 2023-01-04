@@ -5,7 +5,8 @@
     "declaration": true,
     "outDir": "./lib",
     "strict": true,
-    "lib": ["es6"]
+    "lib": ["es6"],
+    "charset": "utf8",
   },
   "include": [
     "src/**/*.ts",
