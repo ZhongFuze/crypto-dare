@@ -1,6 +1,6 @@
-import { AuthEnc } from './dare'
-import * as _const from './const'
+import AuthEnc from './encode'
 import Config from './config'
+import * as _const from './const'
 
 export default class EncReader {
   authEnc: AuthEnc

@@ -1,6 +1,7 @@
-import { AuthDec, Package } from "./dare"
-import * as _const from './const'
+import AuthDec from "./decode"
 import Config from './config'
+import Package from "./package"
+import * as _const from './const'
 
 export default class DecReader {
   authDec: AuthDec

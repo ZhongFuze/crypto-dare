@@ -6,7 +6,7 @@ import Config from './config'
 import * as utils from './utils'
 import * as _const from './const'
 
-export class AuthEnc {
+export default class AuthEnc {
   // Cipher
   key: BinaryLike
   seqNum: number
