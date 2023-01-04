@@ -39,5 +39,8 @@
   },
   "files": [
     "lib/**/*"
-  ]
+  ],
+  "dependencies": {
+    "scrypt-js": "^3.0.1"
+  }
 }
