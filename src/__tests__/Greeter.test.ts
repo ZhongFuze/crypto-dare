@@ -9,28 +9,30 @@ it('Get SHA', async () => {
   console.log('file:', filename, 'SHA is: ', cast)
 })
 
-it('EncDeriveKey', async () => {
-  let dare = new DARE()
-  let src = 'README.md'
-  let dst = 'README.md.enc'
-  let password = '012345678901234567890'
-  const deriveKey = await Promise.resolve(dare.EncryptDeriveKey(password, src, dst))
-  // use deriveKey ...
-})
+// it('EncDeriveKey', async () => {
+//   let dare = new DARE()
+//   let src = 'README.md'
+//   let dst = 'README.md.enc'
+//   let password = '012345678901234567890'
+//   const deriveKey = await Promise.resolve(dare.EncryptDeriveKey(password, src, dst))
+//   // use deriveKey ...
+// })
 
-it('DecDeriveKey', async () => {
-  let dare = new DARE()
-  let src = 'README.md.enc'
-  let dst = 'README.md.dec'
-  let password = '012345678901234567890'
-  const deriveKey = await Promise.resolve(dare.DecryptDeriveKey(password, src, dst))
-  // use deriveKey ...
-})
+// it('DecDeriveKey', async () => {
+//   let dare = new DARE()
+//   let src = 'README.md.enc'
+//   let dst = 'README.md.dec'
+//   let password = '012345678901234567890'
+//   const deriveKey = await Promise.resolve(dare.DecryptDeriveKey(password, src, dst))
+//   // use deriveKey ...
+// })
 
 it('Encrypt', async () => {
   let dare = new DARE()
-  let src = 'README.md'
-  let dst = 'README.md.enc'
+  let src = 'Crypto.pdf'
+  let dst = 'Crypto.pdf.enc'
+  // let src = 'README.md'
+  // let dst = 'README.md.enc'
   let password = '012345678901234567890'
   let deriveKey = await Promise.resolve(dare.EncryptDeriveKey(password, src, dst)) as Uint8Array
   const nn = await Promise.resolve(dare.Encrypt(deriveKey, src, dst))
@@ -39,8 +41,8 @@ it('Encrypt', async () => {
 
 it('Decrypt', async () => {
   let dare = new DARE()
-  let src = 'README.md.enc'
-  let dst = 'README.md.dec'
+  let src = 'Crypto.pdf.enc'
+  let dst = 'Crypto2.pdf'
   let password = '012345678901234567890'
   let deriveKey = await Promise.resolve(dare.DecryptDeriveKey(password, src, dst)) as Uint8Array
   const nn = await Promise.resolve(dare.Decrypt(deriveKey, src, dst))

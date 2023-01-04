@@ -24,20 +24,20 @@ export default class AuthDec {
       throw new Error('invalid payload size')
     }
 
-    let pkg = new Package(src)
-    let header = pkg.Header()
+    const pkg = new Package(src)
+    const header = pkg.Header()
     if (this.refHeader == null) {
       this.refHeader = new Header(header.GetHeader())
     }
 
-    if (_const.HeaderSize + header.Length() + _const.TagSize != src.length) {
+    if (_const.HeaderSize + header.Length() + _const.TagSize !== src.length) {
       throw new Error('invalid payload size')
     }
-    if (!header.IsFinal() && header.Length() != _const.MaxPayloadSize) {
+    if (!header.IsFinal() && header.Length() !== _const.MaxPayloadSize) {
       throw new Error('invalid payload size')
     }
 
-    let refNonce = this.refHeader.Nonce()
+    const refNonce = this.refHeader.Nonce()
     if (header.IsFinal()) {
       this.finalized = true
       refNonce[0] |= 0x80
@@ -47,16 +47,16 @@ export default class AuthDec {
       throw new Error('header nonce mismatch')
     }
 
-    let nonce = Buffer.alloc(12)
+    const nonce = Buffer.alloc(12)
     nonce.set(header.Nonce())
     nonce.set(utils.PutUint32LE(utils.Uint32LE(nonce.subarray(8, 12)) ^ this.seqNum), 8)
 
-    let decipher = crypto.createDecipheriv('aes-256-gcm', this.key, nonce)
+    const decipher = crypto.createDecipheriv('aes-256-gcm', this.key, nonce)
     decipher.setAAD(header.AAD())
     decipher.setAuthTag(pkg.GetAuthTag())
 
-    let cipherText = src.subarray(_const.HeaderSize, _const.HeaderSize+header.Length())
-    let plainText = Buffer.concat([
+    const cipherText = src.subarray(_const.HeaderSize, _const.HeaderSize+header.Length())
+    const plainText = Buffer.concat([
       decipher.update(cipherText),
       decipher.final(),
      ])

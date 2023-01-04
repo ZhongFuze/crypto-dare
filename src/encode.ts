@@ -37,10 +37,8 @@ export default class AuthEnc {
     let nonce = Buffer.alloc(12)
     nonce.set(header.Nonce())
     nonce.set(utils.PutUint32LE(utils.Uint32LE(nonce.subarray(8, 12)) ^ this.seqNum), 8)
-
     let cipher = crypto.createCipheriv('aes-256-gcm', this.key, nonce)
     cipher.setAAD(header.AAD())
-    // let tag = cipher.getAuthTag()
     let cipherText = Buffer.concat([
       header.h,
       cipher.update(src),
