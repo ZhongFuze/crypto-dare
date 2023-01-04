@@ -58,7 +58,7 @@ export default class DARE {
   }
   async Encrypt() {
     // deriveKey: BinaryLike
-    let deriveKey = (await Promise.resolve(this.EncryptDeriveKey())) as Uint8Array;
+    const deriveKey = (await Promise.resolve(this.EncryptDeriveKey())) as Uint8Array;
     const readStream = fs.createReadStream(this.src, { highWaterMark: _const.MaxPayloadSize, start: 0 });
     const writeStream = fs.createWriteStream(this.dst, { flags: 'a' });
     let n = 0;
@@ -80,7 +80,7 @@ export default class DARE {
   }
   async Decrypt() {
     // deriveKey: BinaryLike
-    let deriveKey = (await Promise.resolve(this.DecryptDeriveKey())) as Uint8Array;
+    const deriveKey = (await Promise.resolve(this.DecryptDeriveKey())) as Uint8Array;
     const readStream = fs.createReadStream(this.src, { highWaterMark: _const.MaxPackageSize, start: 32 });
     const writeStream = fs.createWriteStream(this.dst);
     let n = 0;
