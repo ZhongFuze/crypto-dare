@@ -20,7 +20,7 @@
     "url": "git+https://github.com/ZhongFuze/crypto-dare.git"
   },
   "keywords": [
-    "crypto"
+    "nodejs", "crypto", "encryption", "aes", "aead", "dare", "aes-gcm", "decryption", "async"
   ],
   "author": "Zella Zhong",
   "license": "MIT",
