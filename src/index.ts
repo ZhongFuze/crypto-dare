@@ -10,6 +10,7 @@ import DecReader from './decrypt';
 type BinaryLike = string | NodeJS.ArrayBufferView;
 
 export default class DARE {
+  constructor() {}
   EncryptDeriveKey(password: string, src: string, dst: string) {
     const pswd = Buffer.from(password.normalize('NFKC'));
     const salt = crypto.randomBytes(32);
