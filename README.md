@@ -1,7 +1,7 @@
 # crypto-dare
 
 ```typescript
-import * as DARE from 'crypto-dare';
+import DARE from 'crypto-dare';
 
 let src = 'Your Origin File (Input)'; // input.txt
 let dst = 'Your Encrypt File (Output)'; // input.enc
@@ -12,7 +12,7 @@ console.log('Number of package:', nn);
 ```
 
 ```typescript
-import * as DARE from 'crypto-dare';
+import DARE from 'crypto-dare';
 
 let src = 'Your Encrypt File (Input)'; // input.enc
 let dst = 'Your Decrypt File (Output)'; // output.dec

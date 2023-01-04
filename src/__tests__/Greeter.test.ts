@@ -37,3 +37,23 @@ it('Decrypt', async () => {
   const nn = await Promise.resolve(dare.Decrypt());
   console.log('number of package:', nn);
 });
+
+// import DARE from 'crypto-dare';
+
+// it('Encrypt', async () => {
+//   let src = 'README.md'; // input.txt
+//   let dst = 'README.md.enc'; // input.enc
+//   let password = '012345678901234567890';
+//   let dare = new DARE(password, src, dst);
+//   const nn = await Promise.resolve(dare.Encrypt());
+//   console.log('Number of package:', nn);
+// })
+
+// it('Decrypt', async () => {
+//   let src = 'README.md.enc';
+//   let dst = 'README2.md';
+//   let password = '012345678901234567890';
+//   let dare = new DARE(password, src, dst);
+//   const nn = await Promise.resolve(dare.Decrypt());
+//   console.log('number of package:', nn);
+// });
