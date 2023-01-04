@@ -1,22 +1,24 @@
 # crypto-dare
 
 ```typescript
-let dare = new DARE();
+import * as DARE from 'crypto-dare';
+
 let src = 'Your Origin File (Input)'; // input.txt
 let dst = 'Your Encrypt File (Output)'; // input.enc
 let password = '012345678901234567890';
-let deriveKey = (await Promise.resolve(dare.EncryptDeriveKey(password, src, dst))) as Uint8Array;
-const nn = await Promise.resolve(dare.Encrypt(deriveKey, src, dst));
+let dare = new DARE(password, src, dst);
+const nn = await Promise.resolve(dare.Encrypt());
 console.log('Number of package:', nn);
 ```
 
 ```typescript
-let dare = new DARE();
+import * as DARE from 'crypto-dare';
+
 let src = 'Your Encrypt File (Input)'; // input.enc
 let dst = 'Your Decrypt File (Output)'; // output.dec
 let password = '012345678901234567890';
-let deriveKey = (await Promise.resolve(dare.DecryptDeriveKey(password, src, dst))) as Uint8Array;
-const nn = await Promise.resolve(dare.Decrypt(deriveKey, src, dst));
+let dare = new DARE(password, src, dst);
+const nn = await Promise.resolve(dare.Decrypt());
 console.log('number of package:', nn);
 ```
 

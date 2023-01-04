@@ -10,15 +10,22 @@ import DecReader from './decrypt';
 type BinaryLike = string | NodeJS.ArrayBufferView;
 
 export default class DARE {
-  constructor() {}
-  EncryptDeriveKey(password: string, src: string, dst: string) {
-    const pswd = Buffer.from(password.normalize('NFKC'));
+  src: string;
+  dst: string;
+  password: string;
+  constructor(pswd: string, src: string, dst: string) {
+    this.password = pswd.normalize('NFKC');
+    this.src = src;
+    this.dst = dst;
+  }
+  EncryptDeriveKey() {
+    const pswd = Buffer.from(this.password);
     const salt = crypto.randomBytes(32);
     const N = 32768;
     const r = 16;
     const p = 1;
     const dkLen = 32;
-    const ws = fs.createWriteStream(dst);
+    const ws = fs.createWriteStream(this.dst);
     ws.write(salt);
     ws.close();
     return new Promise((resolve, reject) => {
@@ -29,14 +36,14 @@ export default class DARE {
       ws.on('error', (err) => reject(err));
     });
   }
-  DecryptDeriveKey(password: string, src: string, dst: string) {
-    const pswd = Buffer.from(password.normalize('NFKC'));
+  DecryptDeriveKey() {
+    const pswd = Buffer.from(this.password);
     const N = 32768;
     const r = 16;
     const p = 1;
     const dkLen = 32;
     const data: Buffer[] = [];
-    const rs = fs.createReadStream(src, { start: 0, end: 31 });
+    const rs = fs.createReadStream(this.src, { start: 0, end: 31 });
     return new Promise((resolve, reject) => {
       rs.on('data', (chunk) => {
         data.push(Buffer.from(chunk));
@@ -49,9 +56,11 @@ export default class DARE {
       rs.on('error', (err) => reject(err));
     });
   }
-  Encrypt(deriveKey: BinaryLike, src: string, dst: string) {
-    const readStream = fs.createReadStream(src, { highWaterMark: _const.MaxPayloadSize, start: 0 });
-    const writeStream = fs.createWriteStream(dst, { flags: 'a' });
+  async Encrypt() {
+    // deriveKey: BinaryLike
+    let deriveKey = (await Promise.resolve(this.EncryptDeriveKey())) as Uint8Array;
+    const readStream = fs.createReadStream(this.src, { highWaterMark: _const.MaxPayloadSize, start: 0 });
+    const writeStream = fs.createWriteStream(this.dst, { flags: 'a' });
     let n = 0;
     const config = new Config(deriveKey);
     config.setConfigDefaults();
@@ -69,9 +78,11 @@ export default class DARE {
       });
     });
   }
-  Decrypt(deriveKey: BinaryLike, src: string, dst: string) {
-    const readStream = fs.createReadStream(src, { highWaterMark: _const.MaxPackageSize, start: 32 });
-    const writeStream = fs.createWriteStream(dst);
+  async Decrypt() {
+    // deriveKey: BinaryLike
+    let deriveKey = (await Promise.resolve(this.DecryptDeriveKey())) as Uint8Array;
+    const readStream = fs.createReadStream(this.src, { highWaterMark: _const.MaxPackageSize, start: 32 });
+    const writeStream = fs.createWriteStream(this.dst);
     let n = 0;
     const config = new Config(deriveKey);
     config.setConfigDefaults();
@@ -87,19 +98,6 @@ export default class DARE {
         writeStream.close();
         resolve(n);
       });
-    });
-  }
-  readFile(filename: string): string {
-    const content = fs.readFileSync(filename);
-    return content.toString();
-  }
-  getSHA(filename: string) {
-    return new Promise((resolve, reject) => {
-      const hash = crypto.createHash('sha1');
-      const stream = fs.createReadStream(filename);
-      stream.on('error', (err) => reject(err));
-      stream.on('data', (chunk) => hash.update(chunk));
-      stream.on('end', () => resolve(hash.digest('hex')));
     });
   }
 }
