@@ -3,23 +3,30 @@
 ```typescript
 import DARE from 'crypto-dare';
 
-let src = 'Your Origin File (Input)'; // input.txt
-let dst = 'Your Encrypt File (Output)'; // input.enc
-let password = '012345678901234567890';
-let dare = new DARE(password, src, dst);
-const nn = await Promise.resolve(dare.Encrypt());
-console.log('Number of package:', nn);
+const origin = '/unix/input.txt'; // must be absolute
+const encrypt = '/unix/encrypt.txt'; // must be absolute
+const decrypt = '/unix/decrypt.txt'; // must be absolute
+const password = '012345678901234567890';
+const dare = new DARE(password);
+
+const m = await Promise.resolve(dare.Encrypt(origin, encrypt));
+console.log('Number of encryption package:', m);
+
+const m = await Promise.resolve(dare.Encrypt(encrypt, decrypt));
+console.log('Number of decryption package:', m);
 ```
 
 ```typescript
 import DARE from 'crypto-dare';
 
-let src = 'Your Encrypt File (Input)'; // input.enc
-let dst = 'Your Decrypt File (Output)'; // output.dec
-let password = '012345678901234567890';
-let dare = new DARE(password, src, dst);
-const nn = await Promise.resolve(dare.Decrypt());
-console.log('number of package:', nn);
+const origin = Buffer.from('Hello world');
+const password = '012345678901234567890';
+const dare = new DARE(password);
+const encrypt = await Promise.resolve(dare.Encrypt(origin));
+const decrypt = await Promise.resolve(dare.Decrypt(encrypt));
+console.log('Origin content is:', dst.toString());
+console.log('Encrypt content is:', encrypt.toString());
+console.log('Decrypt content is:', dst.toString());
 ```
 
 ## Introduce

@@ -2,3 +2,5 @@ src
 tsconfig.json
 tslint.json
 .prettierrc
+README.md.enc
+README.md.dec
