@@ -20,8 +20,7 @@ export default class DARE {
   }
   EncryptDeriveKey(dst: fs.PathLike): Promise<Uint8Array>;
   EncryptDeriveKey(dst?: undefined): Promise<[Uint8Array, Buffer]>;
-  EncryptDeriveKey(dst?: Buffer | fs.PathLike | undefined):
-    Promise<Uint8Array | [Uint8Array, Buffer]> | void {
+  EncryptDeriveKey(dst?: Buffer | fs.PathLike | undefined): Promise<Uint8Array | [Uint8Array, Buffer]> | void {
     const salt = crypto.randomBytes(32);
     const N = 32768;
     const r = 16;
@@ -51,9 +50,7 @@ export default class DARE {
       });
     }
   }
-  DecryptDeriveKey(src: fs.PathLike): Promise<Uint8Array>;
-  DecryptDeriveKey(src: Buffer): Promise<Uint8Array>;
-  DecryptDeriveKey(src: Buffer | fs.PathLike): Promise<Uint8Array> | void {
+  DecryptDeriveKey(src: Buffer | fs.PathLike): Promise<Uint8Array> {
     const N = 32768;
     const r = 16;
     const p = 1;
@@ -81,26 +78,23 @@ export default class DARE {
             if (src.byteLength < 32) {
               throw Error('failed to read salt from src');
             }
-            const salt = src.subarray(0, 32)
+            const salt = src.subarray(0, 32);
             const key = scrypt.syncScrypt(this.password, salt, N, r, p, dkLen);
             resolve(key);
           } else {
             throw Error('src must be a "Buffer" object');
           }
         } catch (err: any) {
-          reject(err)
+          reject(err);
         }
       });
     }
   }
-  Encrypt(src: fs.PathLike, dst: fs.PathLike): void;
-  Encrypt(src: fs.PathLike, dst?: undefined): Promise<Buffer>;
-  Encrypt(src: Buffer, dst: fs.PathLike): void;
-  Encrypt(src: Buffer, dst?: undefined): Promise<Buffer>;
-  async Encrypt(src: Buffer | fs.PathLike,  dst?: Buffer | fs.PathLike | undefined):
-    Promise<Buffer | number | void> {
+  Encrypt(src: fs.PathLike | Buffer, dst: fs.PathLike): void;
+  Encrypt(src: fs.PathLike | Buffer, dst?: undefined): Promise<Buffer>;
+  async Encrypt(src: Buffer | fs.PathLike, dst?: Buffer | fs.PathLike | undefined): Promise<Buffer | number | void> {
     if (dst != null && isAbsolute(dst!.toString())) {
-      const deriveKey = (await Promise.resolve(this.EncryptDeriveKey(dst)));
+      const deriveKey = await Promise.resolve(this.EncryptDeriveKey(dst));
       const writeStream = fs.createWriteStream(dst, { flags: 'a' });
       if (isAbsolute(src.toString())) {
         // read stream -> write stream
@@ -132,8 +126,8 @@ export default class DARE {
             if (Buffer.isBuffer(src)) {
               const count = Math.ceil(src.byteLength / _const.MaxPayloadSize);
               for (let i = 0; i < count; i++) {
-                let s = i * _const.MaxPayloadSize;
-                let e = Math.min(src.byteLength, (i+1) * _const.MaxPayloadSize);
+                const s = i * _const.MaxPayloadSize;
+                const e = Math.min(src.byteLength, (i + 1) * _const.MaxPayloadSize);
                 const chunk = src.subarray(s, e);
                 const cipherText = reader.Read(Buffer.from(chunk));
                 writeStream.write(cipherText);
@@ -153,9 +147,9 @@ export default class DARE {
       }
     } else {
       // dst is null
-      const [deriveKey, salt] = (await Promise.resolve(this.EncryptDeriveKey()));
+      const [deriveKey, salt] = await Promise.resolve(this.EncryptDeriveKey());
       const chunks: Buffer[] = [];
-      chunks.push(salt)
+      chunks.push(salt);
       if (isAbsolute(src.toString())) {
         // read stream -> Buffer
         const readStream = fs.createReadStream(src, { highWaterMark: _const.MaxPayloadSize, start: 0 });
@@ -185,8 +179,8 @@ export default class DARE {
             if (Buffer.isBuffer(src)) {
               const count = Math.ceil(src.byteLength / _const.MaxPayloadSize);
               for (let i = 0; i < count; i++) {
-                let s = i * _const.MaxPayloadSize;
-                let e = Math.min(src.byteLength, (i+1) * _const.MaxPayloadSize);
+                const s = i * _const.MaxPayloadSize;
+                const e = Math.min(src.byteLength, (i + 1) * _const.MaxPayloadSize);
                 const chunk = src.subarray(s, e);
                 const cipherText = reader.Read(Buffer.from(chunk));
                 chunks.push(cipherText);
@@ -205,14 +199,11 @@ export default class DARE {
       }
     }
   }
-  Decrypt(src: fs.PathLike, dst: fs.PathLike): void;
-  Decrypt(src: fs.PathLike, dst?: undefined): Promise<Buffer>;
-  Decrypt(src: Buffer, dst: fs.PathLike): void;
-  Decrypt(src: Buffer, dst?: undefined): Promise<Buffer>;
-  async Decrypt(src: Buffer | fs.PathLike,  dst?: Buffer | fs.PathLike | undefined):
-  Promise<Buffer | number | void> {
+  Decrypt(src: fs.PathLike | Buffer, dst: fs.PathLike): void;
+  Decrypt(src: fs.PathLike | Buffer, dst?: undefined): Promise<Buffer>;
+  async Decrypt(src: Buffer | fs.PathLike, dst?: Buffer | fs.PathLike | undefined): Promise<Buffer | number | void> {
     if (dst != null && isAbsolute(dst!.toString())) {
-      const deriveKey = (await Promise.resolve(this.DecryptDeriveKey(src))); // as Uint8Array;
+      const deriveKey = await Promise.resolve(this.DecryptDeriveKey(src)); // as Uint8Array;
       const writeStream = fs.createWriteStream(dst);
       if (isAbsolute(src.toString())) {
         // read stream -> write stream
@@ -236,17 +227,17 @@ export default class DARE {
       } else {
         // Buffer block -> write stream
         let n = 0;
-        const salt_offset = 32
+        const saltOffset = 32;
         const config = new Config(deriveKey);
         config.setConfigDefaults();
         const reader = new DecReader(config);
         return new Promise((resolve, reject) => {
           try {
             if (Buffer.isBuffer(src)) {
-              const count = Math.ceil((src.byteLength - salt_offset) / _const.MaxPackageSize);
+              const count = Math.ceil((src.byteLength - saltOffset) / _const.MaxPackageSize);
               for (let i = 0; i < count; i++) {
-                let s = i * _const.MaxPackageSize + salt_offset;
-                let e = Math.min(src.byteLength, (i+1) * _const.MaxPackageSize + salt_offset);
+                const s = i * _const.MaxPackageSize + saltOffset;
+                const e = Math.min(src.byteLength, (i + 1) * _const.MaxPackageSize + saltOffset);
                 const chunk = src.subarray(s, e);
                 const plainText = reader.Read(Buffer.from(chunk));
                 writeStream.write(plainText);
@@ -266,7 +257,7 @@ export default class DARE {
       }
     } else {
       // dst is null
-      const deriveKey = (await Promise.resolve(this.DecryptDeriveKey(src))); // as Uint8Array;
+      const deriveKey = await Promise.resolve(this.DecryptDeriveKey(src)); // as Uint8Array;
       const chunks: Buffer[] = [];
       if (isAbsolute(src.toString())) {
         // read stream -> Buffer
@@ -289,17 +280,17 @@ export default class DARE {
       } else {
         // Buffer -> Buffer
         let n = 0;
-        const salt_offset = 32
+        const saltOffset = 32;
         const config = new Config(deriveKey);
         config.setConfigDefaults();
         const reader = new DecReader(config);
         return new Promise((resolve, reject) => {
           try {
             if (Buffer.isBuffer(src)) {
-              const count = Math.ceil((src.byteLength - salt_offset) / _const.MaxPackageSize);
+              const count = Math.ceil((src.byteLength - saltOffset) / _const.MaxPackageSize);
               for (let i = 0; i < count; i++) {
-                let s = i * _const.MaxPackageSize + salt_offset;
-                let e = Math.min(src.byteLength, (i+1) * _const.MaxPackageSize + salt_offset);
+                const s = i * _const.MaxPackageSize + saltOffset;
+                const e = Math.min(src.byteLength, (i + 1) * _const.MaxPackageSize + saltOffset);
                 const chunk = src.subarray(s, e);
                 const plainText = reader.Read(Buffer.from(chunk));
                 chunks.push(plainText);

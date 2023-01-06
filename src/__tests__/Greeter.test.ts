@@ -1,7 +1,7 @@
 import DARE from '../index';
 import * as path from 'path';
 import * as fs from 'fs';
-jest.setTimeout(10000)
+jest.setTimeout(10000);
 
 function readFile(filename: string): Buffer {
   const content = fs.readFileSync(filename);
@@ -27,7 +27,7 @@ it('encrypt derive key: Buffer', async () => {
   const dare = new DARE(password);
   const [deriveKey2, salt] = await Promise.resolve(dare.EncryptDeriveKey());
   console.log(deriveKey2, salt);
-  writeFile(dst, salt)
+  writeFile(dst, salt);
   // use deriveKey ...
 });
 
@@ -44,12 +44,15 @@ it('decrypt derive key: Buffer', async () => {
   const src = readFile(path.join(process.cwd(), 'README.md.enc')); // Buffer
   const password = '012345678901234567890';
   const dare = new DARE(password);
-  await dare.DecryptDeriveKey(src).then(deriveKey => {
-    // use deriveKey ...
-    console.log(deriveKey);
-  }).catch(err => {
-    console.error(err.message);
-  });
+  await dare
+    .DecryptDeriveKey(src)
+    .then((deriveKey) => {
+      // use deriveKey ...
+      console.log(deriveKey);
+    })
+    .catch((err) => {
+      console.error(err.message);
+    });
 });
 
 it('Encrypt: path -> path', async () => {
